@@ -7,12 +7,17 @@ usage: houndtrainer.py [-h] [-m MODEL_PATH] [-k KIND] {list,upload,delete,delete
 houndtrainer.py: error: the following arguments are required: operation, base_url
 $
 ```
+## Authentication
+* This script uses a JWT for authentication and expects the value to be provided during runtime.
+* To obtain a JWT (legally) login to your BHE or CE instance and view the 'Network' tab in the 'Developer Tools' in your browser of choice.
+* This approach aligns with the recommendation from SpecterOps for quick API calls  
+https://bloodhound.specterops.io/integrations/bloodhound-api/working-with-api#use-a-jwt%2Fbearer-token
 
 ### Operations
-* list
-* upload
-* delete
-* deleteall
+* [list](#list-custom-nodes)
+* [upload](#upload-model)
+* [delete](#delete-a-node-by-kind-name)
+* [deleteall](#delete-all-nodes)
 
 ## Examples
 ### List custom nodes
