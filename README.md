@@ -99,3 +99,7 @@ Enter JWT: <redacted.redacted.redacted>
 [INFO] Done.
 $
 ```
+## TODO
+* Print all custom type details to STDOUT
+* Output node data to a file
+* Support for authentication with an API key
