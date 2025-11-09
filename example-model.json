@@ -1,0 +1,26 @@
+{
+  "custom_types": {
+    "ExampleUser": {
+      "icon": {
+        "type": "font-awesome",
+        "name": "user",
+        "color": "#4D93D9"
+      }
+    },
+    "ExampleRole": {
+      "icon": {
+        "type": "font-awesome",
+        "name": "user-group",
+        "color": "#47D359"
+      }
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "description": "Example model for BloodHound",
+    "author": "toneillcodes",
+    "created": "202511",
+    "node_prefix": "Example",
+    "edge_prefix": "Example"
+  }
+}
