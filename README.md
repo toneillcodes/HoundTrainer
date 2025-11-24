@@ -2,9 +2,20 @@
 A tool for managing custom node types in BloodHound  
 ## Usage
 ```
-$ python houndtrainer.py
-usage: houndtrainer.py [-h] [-m MODEL_PATH] [-k KIND] {list,upload,delete,deleteall} base_url
-houndtrainer.py: error: the following arguments are required: operation, base_url
+$ python houndtrainer-v4.py -h
+usage: houndtrainer-v4.py [-h] [-o {list,upload,delete,deleteall}] [-b BASE_URL] [-m MODEL_PATH] [-k KIND]
+
+Manage custom types in BloodHound.
+
+options:
+  -h, --help            show this help message and exit
+  -o, --operation {list,upload,delete,deleteall}
+                        Operation to complete.
+  -b, --base-url BASE_URL
+                        The base URL for the BloodHound instance.
+  -m, --model-path MODEL_PATH
+                        Path to the JSON model file to upload.
+  -k, --kind KIND       Custom kind type to delete.
 $
 ```
 ## Authentication
