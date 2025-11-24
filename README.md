@@ -2,8 +2,8 @@
 A tool for managing custom node types in BloodHound  
 ## Usage
 ```
-$ python houndtrainer-v4.py -h
-usage: houndtrainer-v4.py [-h] [-o {list,upload,delete,deleteall}] [-b BASE_URL] [-m MODEL_PATH] [-k KIND]
+$ python houndtrainer.py -h
+usage: houndtrainer.py [-h] [-o {list,upload,delete,deleteall}] [-b BASE_URL] [-m MODEL_PATH] [-k KIND]
 
 Manage custom types in BloodHound.
 
