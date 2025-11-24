@@ -1,13 +1,16 @@
-##
-## HoundTrainer.py
-## https://bloodhound.specterops.io/integrations/bloodhound-api/working-with-api#use-a-jwt%2Fbearer-token
-##
-
-import json
+from typing import Optional, Dict, Any
 import requests
 import argparse
 import logging
-from typing import Optional, Dict, Any
+import getpass
+import json
+import sys
+
+# Try importing pandas, handle error if missing
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
@@ -65,34 +68,50 @@ def delete_all_custom_types(base_url: str, headers: Dict[str, str]) -> None:
     else:
         logging.info("No custom types found.")
 
+# ---------------------------------------------------------
+# Main Entry Point
+# ---------------------------------------------------------
 def main() -> None:
     parser = argparse.ArgumentParser(description="Manage custom types in BloodHound.")
-    parser.add_argument("operation", choices=["list", "upload", "delete", "deleteall"],
+    
+    # Add 'correlate' to choices
+    parser.add_argument("-o", "--operation", choices=["list", "upload", "delete", "deleteall"],
                         help="Operation to complete.")
-    parser.add_argument("base_url", help="The base URL for the BloodHound instance.")
-    parser.add_argument("-m", "--model_path", help="Path to the JSON model file to upload.")
+    
+    parser.add_argument("-b", "--base-url", help="The base URL for the BloodHound instance.")
+    parser.add_argument("-m", "--model-path", help="Path to the JSON model file to upload.")
     parser.add_argument("-k", "--kind", help="Custom kind type to delete.")
 
     args = parser.parse_args()
     operation = args.operation
+    
+    # base-url is required
+    if not args.base_url:
+        logging.error(f"Operation '{operation}' requires a '--base-url' parameter.")
+        sys.exit(1)
+        
     base_url = args.base_url
 
-    bearer_token = input("Enter JWT: ").strip()
+    bearer_token = getpass.getpass("Enter JWT: ").strip()
+    # perform some basic input validation
     if bearer_token.count('.') != 2:
         logging.error("Invalid JWT format.")
-        exit(1)
+        sys.exit(1)
 
+    # build the request headers
     headers = {
         "Authorization": f"Bearer {bearer_token}",
         "Accept": "application/json"
     }
 
+    # upload model (schema)
     if operation == "upload":
         if not args.model_path:
             logging.error("Model path is required for upload operation.")
-            exit(1)
+            sys.exit(1)
         upload_custom_model(base_url, headers, args.model_path)
 
+    # list
     elif operation == "list":
         custom_list = list_custom_types(base_url, headers)
         data = custom_list.get("data") if custom_list else None
@@ -102,10 +121,11 @@ def main() -> None:
         else:
             logging.info("No custom kinds found.")
 
+    # delete node
     elif operation == "delete":
         if not args.kind:
             logging.error("Kind name is required for delete operation.")
-            exit(1)
+            sys.exit(1)
         delete_custom_type(base_url, headers, args.kind)
 
     elif operation == "deleteall":
