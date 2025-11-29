@@ -437,7 +437,11 @@ def main() -> None:
                     parsed_results = results
                     if isinstance(parsed_results['data'], dict):
                         item = parsed_results['data']
-                        logging.info(f"ID: {item.get('id')}, Name: {item.get('kindName')}")
+                        #logging.info(f"ID: {item.get('id')}, Name: {item.get('kindName')}")
+                        item_config = item.get('config')
+                        if 'icon' in item_config:
+                            icon_config = item_config.get('icon')
+                            logging.info(f"ID: {item.get('id')}, Name: {item.get('kindName')}, type: {icon_config.get('type')}, Name: {icon_config.get('name')}, Color: {icon_config.get('color')}")
                     else:
                         logging.warning(f"Unexpected data type in response: {type(parsed_results['data'])}")
                 else:
@@ -455,12 +459,10 @@ def main() -> None:
                 }
                 results = get_cypher_query(base_url, args.id)
                 if results and 'data' in results:
-                    # Use 'results' directly, no need for json.loads()
                     parsed_results = results 
-                    
                     if isinstance(parsed_results['data'], dict):
                         item = parsed_results['data']
-                        logging.info(f"ID: {item.get('id')}, Name: {item.get('name')}")
+                        logging.info(f"ID: {item.get('id')}, Name: {item.get('name')}, Created_At: {item.get('created_at')}, Updated_At: {item.get('updated_at')}, User_id: {item.get('user_id')}, Description: {item.get('description')}, Query: {item.get('query')}")
                 else:
                     logging.info(f"No cypher queries found with id: {args.id}.")
             else:
