@@ -451,18 +451,12 @@ def main() -> None:
         elif type == "cypher":
             # id argument is required for the cypher type
             if args.id:
-                bearer_token = prompt_for_jwt()
-                # build the request headers
-                headers = {
-                    "Authorization": f"Bearer {bearer_token}",
-                    "Accept": "application/json"
-                }
                 results = get_cypher_query(base_url, args.id)
                 if results and 'data' in results:
                     parsed_results = results 
                     if isinstance(parsed_results['data'], dict):
                         item = parsed_results['data']
-                        logging.info(f"ID: {item.get('id')}, Name: {item.get('name')}, Created_At: {item.get('created_at')}, Updated_At: {item.get('updated_at')}, User_id: {item.get('user_id')}, Description: {item.get('description')}, Query: {item.get('query')}")
+                        logging.info(f"ID: {item.get('id')}, Name: {item.get('name')}, Created_At: {item.get('created_at')}, Updated_At: {item.get('updated_at')}, User_id: {item.get('user_id')}, Description: {item.get('description')}, Query: {repr(item.get('query'))}")
                 else:
                     logging.info(f"No cypher queries found with id: {args.id}.")
             else:

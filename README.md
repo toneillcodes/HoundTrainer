@@ -66,11 +66,29 @@ References:
 
 ### Get Operation
 #### Get a Custom Node Type
-Get output with custom node type
+Retrieve custom node type details by kind name (--name)
+```
+$ python houndtrainer.py get --type node --url http://127.0.0.1:8080 --name ExampleUser
+[INFO] Listing custom type for kind_name 'ExampleUser'...
+Enter JWT:
+[INFO] ID: 280, Name: ExampleUser, type: font-awesome, Name: user, Color: #4D93D9
+[INFO] Done.
+$
+```
+#### Get a Cypher Query
+Retrieve cypher query details by ID (--id)
+```
+$ python houndtrainer.py get --type cypher --url http://127.0.0.1:8080 --id 14
+[INFO] Retrieving cypher query for ID: '14'...
+Enter JWT:
+[INFO] ID: 14, Name: Test Query, Created_At: 2025-11-29T15:05:37.546016Z, Updated_At: 2025-11-29T18:02:40.993889Z, User_id: 0f916532-08f7-47f4-bf1b-37b2317cce1b, Description: Testing, Query: "match(a:ExampleUser)\nwhere a.objectid = 'Bob'\nreturn a"
+[INFO] Done.
+$
+```
 
 ### List Operation
 #### List Custom Nodes
-List output with custom node types
+List custom node types
 ```
 $ python houndtrainer.py list --type node --url http://127.0.0.1:8080
 [INFO] Listing all custom types...
@@ -89,7 +107,7 @@ Enter JWT:
 [INFO] Done.
 $
 ```
-#### List Cypher Querie
+#### List Cypher Queries
 List output with cypher queries under the 'owned' scope
 ```
 $ python houndtrainer.py list --type cypher --url http://127.0.0.1:8080
@@ -107,6 +125,7 @@ Enter JWT:
 [INFO] Done.
 $
 ```
+
 ### Upload Operation
 #### Upload Custom Type Model
 Upload example-model.json
