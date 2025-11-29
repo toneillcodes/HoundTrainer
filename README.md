@@ -1,21 +1,24 @@
 # HoundTrainer
-A tool for managing custom node types in BloodHound  
+A tool for managing custom node types and cypher queries in BloodHound  
 ## Usage
 ```
 $ python houndtrainer.py -h
-usage: houndtrainer.py [-h] [-o {list,upload,delete,deleteall}] [-b BASE_URL] [-m MODEL_PATH] [-k KIND]
+usage: houndtrainer.py [-h] {create,get,list,upload,export,delete,deleteall} ...
 
-Manage custom types in BloodHound.
+Manage custom types and cypher queries in BloodHound.
+
+positional arguments:
+  {create,get,list,upload,export,delete,deleteall}
+    create              Create a schema model from CSV definitions.
+    get                 Retrieve a specific resource
+    list                List custom node or cypher resources
+    upload              Upload custom node or cypher resources
+    export              Export custom node or cypher resources
+    delete              Delete a custom node or cypher resource
+    deleteall           Delete all custom node or cypher resources
 
 options:
   -h, --help            show this help message and exit
-  -o, --operation {list,upload,delete,deleteall}
-                        Operation to complete.
-  -b, --base-url BASE_URL
-                        The base URL for the BloodHound instance.
-  -m, --model-path MODEL_PATH
-                        Path to the JSON model file to upload.
-  -k, --kind KIND       Custom kind type to delete.
 $
 ```
 ## Authentication
@@ -24,49 +27,93 @@ $
 * This approach aligns with the recommendation from SpecterOps for quick API calls  
 https://bloodhound.specterops.io/integrations/bloodhound-api/working-with-api#use-a-jwt%2Fbearer-token
 
-### Operations
-* [list](#list-custom-nodes)
-* [upload](#upload-model)
-* [delete](#delete-a-node-by-kind-name)
-* [deleteall](#delete-all-nodes)
+### Operations List
+* [create](#create-operation)
+* [get](#get-operation)
+* [list](#list-operation)
+* [upload](#upload-operation)
+* [export](#export-operation)
+* [delete](#delete-operation)
+* [deleteall](#deleteall-operation)
 
-## Examples
-### List custom nodes
+### Operations References
+
+### Create Operations
+#### Create a Model
+Create a model from CSV definitions
+
+### Get Operations
+#### Get a Custom Node Type
+Get output with custom node type
+
+### List Operations
+#### List Custom Nodes
+List output with custom node types
 ```
-$ python houndtrainer.py list http://127.0.0.1:8080
-Enter JWT: <redacted.redacted.redacted>
-[INFO] Listing custom types...
-[INFO] ID: 1, Kind Name: ExampleUser
-[INFO] ID: 2, Kind Name: ExampleSecurityUser
-[INFO] ID: 3, Kind Name: ExampleGroup
-[INFO] ID: 4, Kind Name: ExampleClass
-[INFO] ID: 5, Kind Name: ExampleObject
+$ python houndtrainer.py list --type node --url http://127.0.0.1:8080
+[INFO] Listing all custom types...
+Enter JWT:
+[INFO] ID: 280, Kind Name: ExampleUser
+[INFO] ID: 281, Kind Name: ExampleRole
 [INFO] Done.
 $
 ```
-
-### Upload model
+List output when no custom node types nodes are found
 ```
-$ python houndtrainer.py upload http://127.0.0.1:8080 -m example-model-v3.json
-Enter JWT: <redacted.redacted.redacted>
-[INFO] Uploading model...
+$ python houndtrainer.py list --type node --url http://127.0.0.1:8080
+[INFO] Listing all custom types...
+Enter JWT:
+[INFO] No custom kinds found.
+[INFO] Done.
+$
+```
+#### List Cypher Queries
+List output with cypher queries under the 'owned' scope
+```
+$ python houndtrainer.py list --type cypher --url http://127.0.0.1:8080
+[INFO] Listing all cypher queries under scope: 'owned'...
+Enter JWT:
+[INFO] ID: 14, Query: Test Query
+[INFO] Done.
+```
+List output when no cypher queries are found
+```
+$ python houndtrainer.py list --type cypher --url http://127.0.0.1:8080
+[INFO] Listing all cypher queries under scope: 'owned'...
+Enter JWT:
+[INFO] No cypher queries found.
+[INFO] Done.
+$
+```
+### Upload Operations
+#### Upload Custom Type Model
+Upload example-model.json
+```
+$ python houndtrainer.py upload --type node --url http://127.0.0.1:8080 --file example-model.json
+[INFO] Uploading model from file: example-model.json...
+Enter JWT:
 [INFO] Model uploaded successfully.
-[INFO] Done.
-$
-
-$ python houndtrainer.py list http://127.0.0.1:8080
-Enter JWT: <redacted.redacted.redacted>
-[INFO] Listing custom types...
-[INFO] ID: 1, Kind Name: ExampleUser
-[INFO] ID: 2, Kind Name: ExampleSecurityUser
-[INFO] ID: 3, Kind Name: ExampleGroup
-[INFO] ID: 4, Kind Name: ExampleClass
-[INFO] ID: 5, Kind Name: ExampleObject
+[INFO] Operation 'upload' for type 'node' with file example-model.json was successful.
 [INFO] Done.
 $
 ```
+Validate custom types were loaded
+```
+$ python houndtrainer.py list --type node --url http://127.0.0.1:8080
+[INFO] Listing all custom types...
+Enter JWT:
+[INFO] ID: 280, Kind Name: ExampleUser
+[INFO] ID: 281, Kind Name: ExampleRole
+[INFO] Done.
+$
+```
+#### Upload Single Cypher Query
+Notes
+#### Upload Cypher Query Pack (ZIP)
+Notes
 
-### Delete a node by kind name
+### Delete Operations
+#### Delete a node by kind name
 ```
 $ python houndtrainer.py delete http://127.0.0.1:8080 -k ExampleObject
 Enter JWT: <redacted.redacted.redacted>
@@ -86,9 +133,9 @@ Enter JWT: <redacted.redacted.redacted>
 $
 ```
 
-### Delete all nodes
+#### Delete all Nodes
 ```
-$ python houndtrainer.py deleteall http://127.0.0.1:8080
+$ python houndtrainer.py deleteall --type node http://127.0.0.1:8080
 Enter JWT: <redacted.redacted.redacted>
 [INFO] Deleting all custom types...
 [INFO] Listing custom types...
@@ -103,7 +150,32 @@ Enter JWT: <redacted.redacted.redacted>
 [INFO] Done.
 $
 
-$ python houndtrainer.py list http://127.0.0.1:8080
+$ python houndtrainer.py list  --type node http://127.0.0.1:8080
+Enter JWT: <redacted.redacted.redacted>
+[INFO] Listing custom types...
+[INFO] No custom kinds found.
+[INFO] Done.
+$
+```
+
+#### Delete all Cypher Queries
+```
+$ python houndtrainer.py deleteall --type cypher http://127.0.0.1:8080
+Enter JWT: <redacted.redacted.redacted>
+[INFO] Deleting all custom types...
+[INFO] Listing custom types...
+[INFO] Deleting custom type: ExampleUser
+[INFO] Deleted custom type: ExampleUser
+[INFO] Deleting custom type: ExampleSecurityUser
+[INFO] Deleted custom type: ExampleSecurityUser
+[INFO] Deleting custom type: ExampleGroup
+[INFO] Deleted custom type: ExampleGroup
+[INFO] Deleting custom type: ExampleClass
+[INFO] Deleted custom type: ExampleClass
+[INFO] Done.
+$
+
+$ python houndtrainer.py list  --type cypher http://127.0.0.1:8080
 Enter JWT: <redacted.redacted.redacted>
 [INFO] Listing custom types...
 [INFO] No custom kinds found.
