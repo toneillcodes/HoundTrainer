@@ -36,13 +36,13 @@ $
 ```
 
 ## Operations
-* [create](#create-operations)
-* [get](#get-operations)
-* [list](#list-operations)
-* [upload](#upload-operations)
-* [export](#export-operations)
-* [delete](#delete-operations)
-* [deleteall](#deleteall-operations)
+* [create](#create-operation)
+* [get](#get-operation)
+* [list](#list-operation)
+* [upload](#upload-operation)
+* [export](#export-operation)
+* [delete](#delete-operation)
+* [deleteall](#deleteall-operation)
 
 ### Create Operation
 #### Create a Model
