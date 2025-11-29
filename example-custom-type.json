@@ -1,0 +1,11 @@
+{
+    "custom_types": {
+        "ExampleRole": {
+            "icon": {
+                "type": "font-awesome",
+                "name": "user-group",
+                "color": "#47D359"
+            }
+        }
+    }
+}

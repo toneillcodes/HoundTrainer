@@ -1,0 +1,5 @@
+{
+    "query": "match(a:ExampleUser)\nwhere a.objectid = 'Bob'\nreturn a",
+    "name": "Test",
+    "description": "This is a test"
+}

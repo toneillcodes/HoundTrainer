@@ -31,16 +31,6 @@ _JWT_TOKEN: Optional[str] = None
 # Create a session for persistent connections
 session = requests.Session()
 
-# maybe this whole thing should just be in a class
-def prompt_for_jwt(self): # Inside the API Client class
-    while True:
-        bearer_token = getpass.getpass("Enter JWT: ").strip()
-        if bearer_token.count('.') == 2 and bearer_token:
-            # Check JWT structure (two dots) and non-emptiness
-            self._jwt_token = bearer_token
-            return bearer_token
-        logging.error("Invalid or empty JWT format. Please try again.")
-
 def prompt_for_jwt():
     global _JWT_TOKEN
     # Return the token if it's already been set
@@ -577,7 +567,7 @@ def main() -> None:
                 logging.error(f"The operation '{operation}' with type '{type}' for id '{args.id}' failed.")
                 sys.exit(1)
             else:
-                logging.info(f"Successfully completed peration '{operation}' for {type}.")
+                logging.info(f"Successfully completed operation '{operation}' for {type}.")
 
     # deleteall methods
     elif operation == "deleteall":
