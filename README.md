@@ -1,11 +1,12 @@
 # HoundTrainer
 A tool for managing custom node types and cypher queries in BloodHound
 ## Quick Start & Prerequisites
-DataHound requires Python 3.x and Pandas.
+HoundTrainer requires Python 3.x.
+Pandas is optional for model creation and the script will fallback to standard libraries for CSV parsing if the import is unavailable.
 1. Clone the repository
 ```
 $ git clone https://github.com/toneillcodes/HoundTrainer.git
-$ cd DataHound
+$ cd HoundTrainer
 ```
 
 2. Install dependencies
