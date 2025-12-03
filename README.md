@@ -63,8 +63,8 @@ Success: Data written to examples\example-model.json
 $
 ```
 References: 
-* [examples\example-model.csv](examples\example-model.csv)
-* [examples\example-model.json](examples\example-model.json)
+* [examples/example-model.csv](examples/example-model.csv)
+* [examples/example-model.json](examples/example-model.json)
 
 ### List Operation
 #### List Custom Node Types
@@ -151,7 +151,7 @@ Enter JWT:
 $
 ```
 References: 
-* [examples\example-model.json](examples\example-model.json)
+* [examples/example-model.json](examples/example-model.json)
 
 #### Upload Single Cypher Query
 Check the list of Cypher Queries
@@ -181,7 +181,7 @@ Enter JWT:
 $
 ```
 References: 
-* [examples\example-cypher.json](examples\example-cypher.json)
+* [examples/example-cypher.json](examples/example-cypher.json)
 
 #### Upload Cypher Query Pack (ZIP)
 TODO
@@ -199,7 +199,7 @@ Success: Data written to examples\example-custom-type.json
 $
 ```
 References: 
-* [examples\example-custom-type.json](examples\example-custom-type.json)
+* [examples/example-custom-type.json](examples/example-custom-type.json)
 #### Export a Cypher Query
 Export cypher query by ID (--id)
 ```
@@ -212,7 +212,7 @@ Success: Data written to examples\example-cypher.json
 $
 ```
 References:
-* [examples\example-cypher.json](examples\example-cypher.json)
+* [examples/example-cypher.json](examples/example-cypher.json)
 
 ### Delete Operation
 #### Delete a Custom Node Type by kind name
