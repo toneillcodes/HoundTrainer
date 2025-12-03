@@ -56,15 +56,15 @@ ExampleRole,user-group,#47D359
 ```
 Parse CSV (--csv) and generate JSON (--file)
 ```
-$ python houndtrainer.py create --type model --csv example-model.csv --file example-model.json
-Success: Data written to example-model.json
-[INFO] Successfully wrote model from 'example-model.csv' to file 'example-model.json'.
+$ python houndtrainer.py create --type model --csv examples\example-model.csv --file examples\example-model.json
+Success: Data written to examples\example-model.json
+[INFO] Successfully wrote model from 'examples\example-model.csv' to file 'examples\example-model.json'.
 [INFO] Done.
 $
 ```
 References: 
-* [example-model.csv](example-model.csv)
-* [example-model.json](example-model.json)
+* [examples\example-model.csv](examples\example-model.csv)
+* [examples\example-model.json](examples\example-model.json)
 
 ### List Operation
 #### List Custom Node Types
@@ -132,11 +132,11 @@ $
 #### Upload Custom Node Type Model
 Upload example-model.json
 ```
-$ python houndtrainer.py upload --type node --url http://127.0.0.1:8080 --file example-model.json
-[INFO] Uploading model from file: example-model.json...
+$ python houndtrainer.py upload --type node --url http://127.0.0.1:8080 --file examples\example-model.json
+[INFO] Uploading model from file: examples\example-model.json...
 Enter JWT:
 [INFO] Model uploaded successfully.
-[INFO] Operation 'upload' for type 'node' with file example-model.json was successful.
+[INFO] Operation 'upload' for type 'node' with file examples\example-model.json was successful.
 [INFO] Done.
 $
 ```
@@ -151,7 +151,7 @@ Enter JWT:
 $
 ```
 References: 
-* [example-model.json](example-model.json)
+* [examples\example-model.json](examples\example-model.json)
 
 #### Upload Single Cypher Query
 Check the list of Cypher Queries
@@ -162,13 +162,13 @@ Enter JWT:
 [INFO] No cypher queries found.
 [INFO] Done.
 ```
-Upload the example cypher query file ```example-cypher.json```
+Upload the example cypher query file ```examples\example-cypher.json```
 ```
-$ python houndtrainer.py upload --type cypher --url http://127.0.0.1:8080 --file example-cypher.json
-[INFO] Uploading query JSON from file: example-cypher.json...
+$ python houndtrainer.py upload --type cypher --url http://127.0.0.1:8080 --file examples\example-cypher.json
+[INFO] Uploading query JSON from file: examples\example-cypher.json...
 Enter JWT:
 [INFO] Cypher query uploaded successfully.
-[INFO] Operation 'upload' for type 'cypher' with file example-cypher.json was successful.
+[INFO] Operation 'upload' for type 'cypher' with file examples\example-cypher.json was successful.
 [INFO] Done.
 ```
 Check the list of Cypher Queries
@@ -181,7 +181,7 @@ Enter JWT:
 $
 ```
 References: 
-* [example-cypher.json](example-cypher.json)
+* [examples\example-cypher.json](examples\example-cypher.json)
 
 #### Upload Cypher Query Pack (ZIP)
 TODO
@@ -190,29 +190,29 @@ TODO
 #### Export a Custom Node Type
 Export a Custom Node Type by kind name (--name)
 ```
-$ python houndtrainer.py export --type node --url http://127.0.0.1:8080 --name ExampleRole --file example-custom-type.json
+$ python houndtrainer.py export --type node --url http://127.0.0.1:8080 --name ExampleRole --file examples\example-custom-type.json
 [INFO] Listing custom type for kind_name 'ExampleRole'...
 Enter JWT:
-Success: Data written to example-custom-type.json
-[INFO] Successfully wrote 'node' data to file 'example-custom-type.json'.
+Success: Data written to examples\example-custom-type.json
+[INFO] Successfully wrote 'node' data to file 'examples\example-custom-type.json'.
 [INFO] Done.
 $
 ```
 References: 
-* [example-custom-type.json](example-custom-type.json)
+* [examples\example-custom-type.json](examples\example-custom-type.json)
 #### Export a Cypher Query
 Export cypher query by ID (--id)
 ```
-$ python houndtrainer.py export --type cypher --url http://127.0.0.1:8080 --id 16 --file example-cypher.json
+$ python houndtrainer.py export --type cypher --url http://127.0.0.1:8080 --id 16 --file examples\example-cypher.json
 [INFO] Exporting cypher query ID '16'...
 Enter JWT:
-Success: Data written to example-cypher.json
-[INFO] Successfully wrote 'cypher' data to file 'example-cypher.json'.
+Success: Data written to examples\example-cypher.json
+[INFO] Successfully wrote 'cypher' data to file 'examples\example-cypher.json'.
 [INFO] Done.
 $
 ```
 References:
-* [example-cypher.json](example-cypher.json)
+* [examples\example-cypher.json](examples\example-cypher.json)
 
 ### Delete Operation
 #### Delete a Custom Node Type by kind name
@@ -293,7 +293,7 @@ $
 #### Delete all Cypher Queries
 ```
 $ python houndtrainer.py deleteall --type cypher --url http://127.0.0.1:8080
-Enter JWT: <redacted.redacted.redacted>
+Enter JWT: 
 [INFO] Deleting all custom types...
 [INFO] Listing custom types...
 [INFO] Deleting custom type: ExampleUser
@@ -308,7 +308,7 @@ Enter JWT: <redacted.redacted.redacted>
 $
 
 $ python houndtrainer.py list --type cypher --url http://127.0.0.1:8080
-Enter JWT: <redacted.redacted.redacted>
+Enter JWT: 
 [INFO] Listing custom types...
 [INFO] No custom kinds found.
 [INFO] Done.
@@ -321,9 +321,19 @@ $
 * This approach aligns with the recommendation from SpecterOps for quick API calls  
 https://bloodhound.specterops.io/integrations/bloodhound-api/working-with-api#use-a-jwt%2Fbearer-token
 
+## API Reference
+All operations utilize the following endpoints
+| Operation Type | Endpoint |
+| ---- | ---- |
+| node| custom-nodes |
+| cypher | saved-queries |
+
 ## TODO
 * ~~Print all custom type details to STDOUT~~ Added 11/29/25
 * ~~Output node data to a file~~ Added 11/29/25
 * Support for authentication with an API key
 * Ability to pass a list of IDs or Kind Names for get/export operations
 * Validate operation to validate icon and OG schemas
+
+## Shoutouts
+* [cokernel](https://github.com/C0KERNEL): for help with testing, documentation updates and suggestions.
