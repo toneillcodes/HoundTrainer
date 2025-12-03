@@ -184,7 +184,28 @@ References:
 * [examples/example-cypher.json](examples/example-cypher.json)
 
 #### Upload Cypher Query Pack (ZIP)
-TODO
+Upload a Cypher Query Pack 
+```
+$ python houndtrainer.py upload --type cypher --url http://127.0.0.1:8080 --file examples\example-cypher-pack.zip
+[INFO] Uploading query zip from archive: examples\example-cypher-pack.zip...
+Enter JWT:
+[INFO] Query ZIP uploaded successfully.
+[INFO] Operation 'upload' for type 'cypher' with file examples\example-cypher-pack.zip was successful.
+[INFO] Done.
+$
+```
+Check the list of Cypher Queries
+```
+$ python houndtrainer.py list --type cypher --url http://127.0.0.1:8080
+[INFO] Listing all cypher queries under scope: 'owned'...
+Enter JWT:
+[INFO] ID: 22, Query: Test
+[INFO] ID: 23, Query: Another Test
+[INFO] ID: 24, Query: Find Helpdesk Admins
+[INFO] ID: 25, Query: Find DA Users
+[INFO] Done.
+$
+```
 
 ### Export Operation
 #### Export a Custom Node Type
@@ -195,6 +216,21 @@ $ python houndtrainer.py export --type node --url http://127.0.0.1:8080 --name E
 Enter JWT:
 Success: Data written to examples\example-custom-type.json
 [INFO] Successfully wrote 'node' data to file 'examples\example-custom-type.json'.
+[INFO] Done.
+$
+```
+References: 
+* [examples/example-custom-type.json](examples/example-custom-type.json)
+#### Export All Custom Node Types
+Export all Custom Node Types into one JSON file
+```
+$ python houndtrainer.py export --type node --url http://127.0.0.1:8080 --all --file examples\example-custom-types.json
+[INFO] Exporting all custom types...
+[INFO] Listing all custom types...
+Enter JWT:
+[INFO] kindName found: ExampleUser.
+[INFO] kindName found: ExampleRole.
+[INFO] Successfully exported 'node' data to file 'examples\example-custom-types.json'.
 [INFO] Done.
 $
 ```
@@ -213,6 +249,18 @@ $
 ```
 References:
 * [examples/example-cypher.json](examples/example-cypher.json)
+
+#### Export All Cypher Queries
+Export all cypher queries to a ZIP (--file)
+```
+$ python houndtrainer.py export --type cypher --url http://127.0.0.1:8080 --all --file examples\example-cypher-pack.zip
+[INFO] Exporting cypher queries for scope 'owned'...
+Enter JWT:
+[INFO] Saving cypher archive as: 'examples\example-cypher-pack.zip'
+[INFO] Successfully exported 'cypher' data to file 'examples\example-cypher-pack.zip'.
+[INFO] Done.
+$
+```
 
 ### Delete Operation
 #### Delete a Custom Node Type by kind name
