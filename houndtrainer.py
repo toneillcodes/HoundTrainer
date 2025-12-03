@@ -420,16 +420,23 @@ def upload_cypher_query(base_url: str, file_path: str) -> None:
 
 def upload_cypher_queries(base_url: str, file_path: str) -> None:
     if not file_path.lower().endswith(".zip"):
-        logging.info(f"File '{file_path}' does not appear to be a ZIP. Multiple cypher queries must be uploaded as JSON files within a ZIP.")
-        raise ValueError("File is not a ZIP archive.")
-    logging.info("Uploading query zip from archive: {file_path}...")
+        logging.error(f"File '{file_path}' does not appear to be a ZIP. Multiple cypher queries must be uploaded as JSON files within a ZIP.")
+        return False
+    logging.info(f"Uploading query zip from archive: {file_path}...")
     url = f"{base_url}{saved_queries_path}/import"
     try:
         with open(file_path, 'rb') as file:
-            files = {'upload_file': (file.name, file)}
-        response = handle_request('POST', url, files=files)        
-        logging.info("Query ZIP uploaded successfully.")
-        return True
+            files = {'upload_file': (file.name, file)}            
+            headers = {
+                # This tells the server that the raw data in the request body is a ZIP file.
+                'Content-Type': 'application/zip'
+            }            
+            response = handle_request('POST', url, files=files, headers=headers)
+            if response:
+                logging.info("Query ZIP uploaded successfully.")
+                return True
+            else:
+                return False
     except FileNotFoundError:
         logging.error(f"File not found at path '{file_path}'")
         return False
@@ -618,8 +625,11 @@ def main() -> None:
         elif type == "cypher":
             if not args.file:
                 logging.error(f"Operation '{operation}' requires a '--file' parameter.")
-                sys.exit(1)                
-            upload_status = upload_cypher_query(base_url, args.file)
+                sys.exit(1)
+            if args.file.lower().endswith(".zip"):
+                upload_status = upload_cypher_queries(base_url, args.file)
+            else:
+                upload_status = upload_cypher_query(base_url, args.file)
         if upload_status:
             logging.info(f"Operation '{operation}' for type '{type}' with file {args.file} was successful.")
         else:
