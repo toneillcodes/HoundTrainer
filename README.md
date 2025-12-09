@@ -1,5 +1,9 @@
-# HoundTrainer
-A tool for managing custom node types and cypher queries in BloodHound
+<p align="center">
+  <img src="assets/houndtrainer.png">
+</p>
+
+# Overview
+HoundTrainer is a tool for managing custom node types and cypher queries in BloodHound.
 ## Quick Start & Prerequisites
 HoundTrainer requires Python 3.x.
 Pandas is optional for model creation and the script will fallback to standard libraries for CSV parsing if the import is unavailable.
