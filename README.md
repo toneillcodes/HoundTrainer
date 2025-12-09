@@ -388,4 +388,4 @@ All operations utilize the following endpoints
 * Validate operation to validate icon and OG schemas
 
 ## Shoutouts
-* [cokernel](https://github.com/C0KERNEL): for help with testing, documentation updates and suggestions.
+* [c0kernel](https://github.com/C0KERNEL): for help with testing, documentation updates and suggestions.
