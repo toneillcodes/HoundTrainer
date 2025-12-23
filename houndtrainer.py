@@ -65,26 +65,12 @@ def handle_request(method: str, url: str, **kwargs):
             
         response = session.request(method, url, headers=req_headers, **kwargs)
         response.raise_for_status()
-        
-        # check for presence of content before attempting to decode JSON
-        if response.content:
-            # Check Content-Disposition header for 'attachment'
-            content_disposition = response.headers.get('Content-Disposition')
-            if content_disposition and 'attachment' in content_disposition.lower():
-            # Check Content-Type header for common file types and not text/html
-                content_type = response.headers.get('Content-Type', '').lower()
-                if 'application/octet-stream' in content_type:
-                    return response
-            # if content exists, attempt to decode it as JSON
-            # todo: make this more flexible
-            return response.json()
-        else:
-            # returning True for successful status codes like 204 or 200 with no body.
-            return True
+
+        return True, response
     except requests.exceptions.HTTPError as e:
         status_code = e.response.status_code if e.response is not None else 0
         logging.error(f"HTTP Error: {e}")
-        return False, status_code
+        return False, response
     except requests.RequestException as e:
         logging.error(f"Request failed: {e}")
         return False, None
@@ -173,7 +159,9 @@ def get_custom_type(base_url: str, kind_name: str) -> Optional[Dict[str, Any]]:
     url = f"{base_url}{custom_nodes_path}/{kind_name}"
     try:
         response = handle_request('GET', url)     
-        return response 
+        if response[0]:
+            return response[1].json()
+        return False
     except requests.exceptions.RequestException as e:
         logging.exception(f"Failed to fetch custom type for kind_name '{kind_name}': {e}")
         return None
@@ -183,7 +171,8 @@ def list_custom_types(base_url: str) -> Optional[Dict[str, Any]]:
     url = f"{base_url}{custom_nodes_path}"
     try:
         response = handle_request('GET', url)
-        return response
+        if response[0]:
+            return response[1].json()
     except requests.exceptions.RequestException as e:
         logging.exception(f"Failed to fetch all custom types: {e}")
         return None
@@ -195,9 +184,12 @@ def upload_custom_model(base_url: str, file_path: str) -> None:
         with open(file_path, 'r') as file:
             payload = json.load(file)
         response = handle_request('POST', url, json=payload)
-        if isinstance(response, tuple):
-            # the tuple is (False, status_code) but it might make sense to replace the False since the tuple implies failure
-            status_code = response[1] if len(response) > 1 else "Unknown status_code from handle_request."
+
+        if response[0]:
+            # in this situation we don't care about the response
+            return True
+        else:
+            status_code = response[1].status_code if len(response) > 1 else "Unknown status_code from handle_request."
             #logging.error(f"Upload model API request failed (from handle_request): {status_code}")
 
             # detect kindName conflict and notify the user
@@ -213,18 +205,9 @@ def upload_custom_model(base_url: str, file_path: str) -> None:
                     logging.info(f"Running clean up.")
                     logging.info(f"Clean up done.")                
                 '''
-        else:
-            # if it's not a tuple, assume it's a requests.Response object
-            if response and response.status_code < 400:
-                # successful upload, return true
-                return True
-            elif response:
-                # handle errors returned as a requests.Response object (e.g., 400, 500)
-                logging.error(f"Model upload failed with status code {response.status_code}. Details: {response.text}")
-                return False
             else:
-                # fallback for unexpected response (should be covered by tuple check)
-                logging.error("Model upload failed")
+                # handle errors returned as a requests.Response object (e.g., 400, 500)
+                logging.error(f"Model upload failed with status code {response[1].status_code}. Details: {response[1].text}")
                 return False
     except FileNotFoundError:
         logging.error(f"File not found at path '{file_path}'")
@@ -315,7 +298,7 @@ def delete_custom_type(base_url: str, kind_name: str) -> None:
     url = f"{base_url}{custom_nodes_path}/{kind_name}"
     try:
         response = handle_request('DELETE', url)
-        if response is not False:
+        if response[0] is not False:
             logging.info(f"Deleted custom type: {kind_name}")
             return True
         else:
@@ -346,7 +329,8 @@ def get_cypher_query(base_url: str, id: int) -> Optional[Dict[str, Any]]:
     url = f"{base_url}{saved_queries_path}/{id}"
     try:
         response = handle_request('GET', url)
-        return response
+        if response[0]:
+            return response[1].json()
     except requests.exceptions.RequestException as e:
         logging.exception(f"Failed to fetch cypher query for ID '{id}' with message: {e}")
         return None
@@ -356,7 +340,9 @@ def list_cypher_queries(base_url: str, scope: str = "owned") -> Optional[Dict[st
     url = f"{base_url}{saved_queries_path}?scope={scope}"
     try:
         response = handle_request('GET', url)
-        return response
+        if response[0]:
+            return response[1].json()
+        return False
     except requests.exceptions.RequestException as e:
         logging.exception(f"Failed to fetch cypher queries: {e}")
         return None
@@ -366,8 +352,8 @@ def export_cypher_query(base_url: str, id: int, output_file: str) -> Optional[Di
     url = f"{base_url}{saved_queries_path}/{id}/export"
     try:
         response = handle_request('GET', url)
-        if response:
-            output_result = write_json_to_file(response, output_file, 4)
+        if response[0]:
+            output_result = write_json_to_file(response[1].json(), output_file, 4)
             if output_result:
                 return True
             else:
@@ -382,12 +368,12 @@ def export_cypher_queries(base_url: str, scope: str, output_file: str) -> Option
     url = f"{base_url}{saved_queries_path}/export?scope={scope}"
     try:
         response = handle_request('GET', url)
-        if response:
+        if response[0]:
             with open(output_file, 'wb') as f:
                 # response.iter_content(chunk_size) reads chunks of the response body
                 # the default is 128 bytes, but 8192 is a common optimization for larger files, which may not be necessary
                 logging.info(f"Saving cypher archive as: '{output_file}'")
-                for chunk in response.iter_content(chunk_size=8192):
+                for chunk in response[1].iter_content(chunk_size=8192):
                     # filter out keep-alive new chunks
                     if chunk: 
                         f.write(chunk)            
@@ -404,7 +390,10 @@ def upload_cypher_query(base_url: str, file_path: str) -> None:
         with open(file_path, 'r') as file:
             payload = json.load(file)
         response = handle_request('POST', url, json=payload)
-        return True
+        if response[0]:
+            return True
+        else:
+            return False
     except FileNotFoundError:
         logging.error(f"File not found at path '{file_path}'")
         return False
@@ -452,7 +441,7 @@ def delete_cypher_query(base_url: str, id: int) -> None:
     url = f"{base_url}{saved_queries_path}/{id}"
     try:
         response = handle_request('DELETE', url)
-        if response is not False:
+        if response[0] is not False:
             logging.info(f"Deleted custom type: {id}")
             return True
         else:
